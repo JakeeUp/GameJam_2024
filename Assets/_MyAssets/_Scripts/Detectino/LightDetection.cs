@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class LightDetection : MonoBehaviour
 {
+    RagdollController ragdollController;
+    private void Awake()
+    {
+        ragdollController = FindObjectOfType<RagdollController>();
+    }
     private void Start()
     {
-        // Ensure the player's collider is set to trigger if needed
+       
         Collider collider = GetComponent<Collider>();
         if (collider != null)
         {
@@ -16,15 +21,19 @@ public class LightDetection : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the collider the player touched is on the "Light" layer
+      
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Debug.Log("Player has been spotted!");
-            // You can add additional functionality here, like handling the player getting caught
+            if (ragdollController != null)
+            {
+                ragdollController.TurnOnRagDoll();
+            }
+           
         }
     }
 
-    // Optional: Log a message when the player exits the light
+  
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))

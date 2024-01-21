@@ -94,7 +94,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]private PlayerState currentState = PlayerState.Idle;
 
-    // [previous fields and methods remain the same]
 
     private void FixedUpdate()
     {
@@ -137,7 +136,6 @@ public class PlayerController : MonoBehaviour
         {
             currentState = PlayerState.Jumping;
         }
-        // Additional walking logic here
     }
 
     private void HandleJumpingState()
@@ -148,7 +146,6 @@ public class PlayerController : MonoBehaviour
         {
             currentState = IsMoving() ? PlayerState.Walking : PlayerState.Idle;
         }
-        // Additional jumping logic here
     }
 
     private void ApplyMovement()
@@ -194,5 +191,4 @@ public class PlayerController : MonoBehaviour
         playerActionsAsset.Player.Jump.started -= DoJump;
         playerActionsAsset.Player.Disable();
     }
-    // Rest of your original methods...
 }
