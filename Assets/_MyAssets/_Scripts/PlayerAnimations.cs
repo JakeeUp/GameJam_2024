@@ -7,6 +7,7 @@ public class PlayerAnimations : MonoBehaviour
     private Animator animator;
     private Rigidbody rb;
     private float maxSpeed = 5f;
+    float minSpeed = 2f;
 
     // Start is called before the first frame update
     void Start()
