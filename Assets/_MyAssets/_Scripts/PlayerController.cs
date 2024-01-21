@@ -29,42 +29,22 @@ public class PlayerController : MonoBehaviour
         rb = this.GetComponent<Rigidbody>();
         playerActionsAsset = new PlayerInputs();
         animator = this.GetComponent<Animator>();
+        playerCamera = Camera.main;
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        playerActionsAsset.Player.Jump.started += DoJump;
-       // playerActionsAsset.Player.Attack.started += DoAttack;
-        move = playerActionsAsset.Player.Move;
-        playerActionsAsset.Player.Enable();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
-
-    private void OnDisable()
+    private void Update()
     {
-        playerActionsAsset.Player.Jump.started -= DoJump;
-       // playerActionsAsset.Player.Attack.started -= DoAttack;
-        playerActionsAsset.Player.Disable();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
-
-    private void FixedUpdate()
-    {
-        forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
-        forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
-
-        rb.AddForce(forceDirection, ForceMode.Impulse);
-        forceDirection = Vector3.zero;
-
-        if (rb.velocity.y < 0f)
-            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
-
-        Vector3 horizontalVelocity = rb.velocity;
-        horizontalVelocity.y = 0;
-        if (horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
-            rb.velocity = horizontalVelocity.normalized * maxSpeed + Vector3.up * rb.velocity.y;
-
-        LookAt();
-    }
-
     private void LookAt()
     {
         Vector3 direction = rb.velocity;
@@ -90,14 +70,7 @@ public class PlayerController : MonoBehaviour
         return right.normalized;
     }
 
-    private void DoJump(InputAction.CallbackContext obj)
-    {
-        if (IsGrounded())
-        {
-            forceDirection += Vector3.up * jumpForce;
-        }
-    }
-
+    
     private bool IsGrounded()
     {
         Ray ray = new Ray(this.transform.position + Vector3.up * 0.25f, Vector3.down);
@@ -111,4 +84,115 @@ public class PlayerController : MonoBehaviour
     //{
     //    animator.SetTrigger("attack");
     //}
+
+    [SerializeField]private enum PlayerState
+    {
+        Idle,
+        Walking,
+        Jumping
+    }
+
+    [SerializeField]private PlayerState currentState = PlayerState.Idle;
+
+    // [previous fields and methods remain the same]
+
+    private void FixedUpdate()
+    {
+        switch (currentState)
+        {
+            case PlayerState.Idle:
+                HandleIdleState();
+                break;
+            case PlayerState.Walking:
+                HandleWalkingState();
+                break;
+            case PlayerState.Jumping:
+                HandleJumpingState();
+                break;
+        }
+    }
+
+    private void HandleIdleState()
+    {
+        if (IsMoving())
+        {
+            currentState = PlayerState.Walking;
+        }
+        else if (!IsGrounded())
+        {
+            currentState = PlayerState.Jumping;
+        }
+        // Additional idle logic here
+    }
+
+    private void HandleWalkingState()
+    {
+        ApplyMovement();
+
+        if (!IsMoving())
+        {
+            currentState = PlayerState.Idle;
+        }
+        else if (!IsGrounded())
+        {
+            currentState = PlayerState.Jumping;
+        }
+        // Additional walking logic here
+    }
+
+    private void HandleJumpingState()
+    {
+        ApplyMovement();
+
+        if (IsGrounded())
+        {
+            currentState = IsMoving() ? PlayerState.Walking : PlayerState.Idle;
+        }
+        // Additional jumping logic here
+    }
+
+    private void ApplyMovement()
+    {
+        forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
+        forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
+
+        rb.AddForce(forceDirection, ForceMode.Impulse);
+        forceDirection = Vector3.zero;
+
+        if (rb.velocity.y < 0f)
+            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+
+        Vector3 horizontalVelocity = rb.velocity;
+        horizontalVelocity.y = 0;
+        if (horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
+            rb.velocity = horizontalVelocity.normalized * maxSpeed + Vector3.up * rb.velocity.y;
+
+        LookAt();
+    }
+
+    private bool IsMoving()
+    {
+        return move.ReadValue<Vector2>().sqrMagnitude > 0.1f;
+    }
+
+    private void DoJump(InputAction.CallbackContext obj)
+    {
+        if (IsGrounded())
+        {
+            forceDirection += Vector3.up * jumpForce;
+            currentState = PlayerState.Jumping;
+        }
+    }
+    private void OnEnable()
+    {
+        playerActionsAsset.Player.Jump.started += DoJump;
+        move = playerActionsAsset.Player.Move;
+        playerActionsAsset.Player.Enable();
+    }
+    private void OnDisable()
+    {
+        playerActionsAsset.Player.Jump.started -= DoJump;
+        playerActionsAsset.Player.Disable();
+    }
+    // Rest of your original methods...
 }
