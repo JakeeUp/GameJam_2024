@@ -5,6 +5,12 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
+    [SerializeField] private TMP_Text[] letterTexts;
+
+    [SerializeField] private string currentPassword = "";
+    [SerializeField] private string targetPassword = "PASSWORD";
     [SerializeField] private int minutes = 1; 
     [SerializeField] private int seconds = 0;
     [SerializeField] private string sceneToLoad = "  "; 
@@ -17,7 +23,13 @@ public class GameManager : MonoBehaviour
         countdownTimer = minutes * 60 + seconds; 
         StartCoroutine(Countdown());
     }
-
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+    }
     private IEnumerator Countdown()
     {
         while (countdownTimer > 0)
@@ -33,5 +45,29 @@ public class GameManager : MonoBehaviour
 
         
         SceneManager.LoadScene(sceneToLoad);
+    }
+
+    public void CollectLetter(char letter)
+    {
+        currentPassword += letter; 
+        UpdateUI();
+    }
+
+    void UpdateUI()
+    {
+        for (int i = 0; i < currentPassword.Length; i++)
+        {
+            if (i < letterTexts.Length)
+            {
+                letterTexts[i].text = currentPassword[i].ToString();
+            }
+        }
+
+        
+        if (currentPassword.Equals(targetPassword))
+        {
+            Debug.Log("Password Complete!");
+            
+        }
     }
 }
