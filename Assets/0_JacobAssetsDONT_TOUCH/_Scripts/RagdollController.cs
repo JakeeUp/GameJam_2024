@@ -31,6 +31,37 @@ public class RagdollController : MonoBehaviour
     {
         SetRagdollState(true);
     }
+
+    public void TurnOnRagDoll(Vector3 forceDirection, float forceMagnitude)
+    {
+        SetRagdollState(true);
+
+        Rigidbody mainRigidbody = FindMainRigidbody();
+        if (mainRigidbody != null)
+        {
+            Debug.Log($"Applying force: {forceDirection.normalized * forceMagnitude}");
+            mainRigidbody.AddForce(forceDirection.normalized * forceMagnitude, ForceMode.Impulse);
+        }
+        else
+        {
+            Debug.Log("Main Rigidbody not found.");
+        }
+    }
+
+    private Rigidbody FindMainRigidbody()
+    {
+        Rigidbody mainRb = null;
+        float maxMass = 0f;
+        foreach (var rb in ragdollRigidbodies)
+        {
+            if (rb.mass > maxMass)
+            {
+                mainRb = rb;
+                maxMass = rb.mass;
+            }
+        }
+        return mainRb;
+    }
     private void SetRagdollState(bool state)
     {
         foreach (var rb in ragdollRigidbodies)
