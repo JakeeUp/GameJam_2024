@@ -18,10 +18,19 @@ public class GameManager : MonoBehaviour
 
     private float countdownTimer;
 
+    private bool isCountdownRunning = false; // Flag to check if countdown is running
+
+    public void StartCountdown()
+    {
+        if (!isCountdownRunning)
+        {
+            StartCoroutine(Countdown());
+            isCountdownRunning = true; 
+        }
+    }
     void Start()
     {
-        countdownTimer = minutes * 60 + seconds; 
-        StartCoroutine(Countdown());
+        countdownTimer = minutes * 60 + seconds;
     }
     void Awake()
     {
@@ -37,13 +46,14 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             countdownTimer--;
 
-            
+
+
             int minutesLeft = Mathf.FloorToInt(countdownTimer / 60);
             int secondsLeft = Mathf.FloorToInt(countdownTimer % 60);
             timerText.text = string.Format("{0:00}:{1:00}", minutesLeft, secondsLeft);
         }
 
-        
+        isCountdownRunning = false; 
         SceneManager.LoadScene(sceneToLoad);
     }
 

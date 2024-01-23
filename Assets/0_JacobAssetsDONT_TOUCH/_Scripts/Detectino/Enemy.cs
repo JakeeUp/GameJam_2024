@@ -7,7 +7,8 @@ public class Enemy : MonoBehaviour
     public LayerMask visionLayerMask;
     public float fieldOfViewAngle = 110f;
     public float visionRange = 10f;
-    private RagdollController ragdollController; 
+    private RagdollController ragdollController;
+    [SerializeField]float flying;
     private void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -38,7 +39,7 @@ public class Enemy : MonoBehaviour
                             Debug.Log("Sending player flying");
                             //ragdollController.TurnOnRagDoll(new Vector3(0, 1, 0), 20f);
                             // ragdollController.TurnOnRagDoll(forceDirection, forceMagnitude);
-                            ragdollController.TurnOnRagDoll(Vector3.up, 500f);
+                            ragdollController.TurnOnRagDoll(Vector3.up, flying);
                         }
                     }
                 }
