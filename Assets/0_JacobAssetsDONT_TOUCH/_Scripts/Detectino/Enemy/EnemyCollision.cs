@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EnemyCollision : MonoBehaviour
 {
-    public float pushForce = 500f;  // Force magnitude
-    public Enemy enemyScript;       // Reference to the Enemy script
+     public float pushForce = 500f;  // Force magnitude
+    public float grabDuration = 0.5f;  // Duration of the grab before the push
+    public Enemy enemyScript;  // Reference to the Enemy script
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,15 +15,25 @@ public class EnemyCollision : MonoBehaviour
             RagdollController ragdollController = other.GetComponent<RagdollController>();
             if (ragdollController != null)
             {
-                Vector3 forceDirection = other.transform.position - transform.position;
-                forceDirection.y = 0;
-                ragdollController.TurnOnRagDoll(forceDirection.normalized, pushForce);
-
+                StartCoroutine(GrabAndPushPlayer(ragdollController, other.transform.position - transform.position));
+                
                 if (enemyScript != null)
                 {
                     enemyScript.HitPlayer = true; // Set the boolean flag
                 }
             }
         }
+    }
+
+    private IEnumerator GrabAndPushPlayer(RagdollController ragdollController, Vector3 pushDirection)
+    {
+        // Optional: Trigger any grab animations or effects here
+
+        // Wait for the grab duration
+        yield return new WaitForSeconds(grabDuration);
+
+        // Apply the push force
+        pushDirection.y = 0; // Keep the push horizontal
+        ragdollController.TurnOnRagDoll(pushDirection.normalized, pushForce);
     }
 }
