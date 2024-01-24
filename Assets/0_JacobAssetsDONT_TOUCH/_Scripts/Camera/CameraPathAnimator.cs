@@ -5,11 +5,12 @@ using UnityEngine;
 public class CameraPathAnimator : MonoBehaviour
 {
     public Camera[] cameras;
-    public Camera mainCamera; 
+    public Camera mainCamera;
     public float switchInterval = 5.0f;
 
     private int currentCameraIndex;
     private float nextSwitchTime;
+    private bool canSkip = true; // Flag to control skipping ability
 
     private void Start()
     {
@@ -29,7 +30,7 @@ public class CameraPathAnimator : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time >= nextSwitchTime)
+        if (Time.time >= nextSwitchTime || (canSkip && Input.GetMouseButtonDown(0)))
         {
             NextCamera();
             nextSwitchTime = Time.time + switchInterval;
@@ -43,6 +44,7 @@ public class CameraPathAnimator : MonoBehaviour
         if (currentCameraIndex >= cameras.Length - 1)
         {
             mainCamera.gameObject.SetActive(true); // Switch back to the main camera
+            canSkip = false; // Disable skipping once the main camera is active
             if (GameManager.instance != null)
             {
                 GameManager.instance.StartCountdown(); // Start the countdown

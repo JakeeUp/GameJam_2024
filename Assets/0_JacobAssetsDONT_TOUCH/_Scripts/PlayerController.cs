@@ -21,8 +21,22 @@ public class PlayerController : MonoBehaviour
     private Vector3 forceDirection = Vector3.zero;
 
     [SerializeField]
+    private float stoppingFactor = 5f;
+
+    [SerializeField]
+    private float customGravityScale = 2f;
+
+    [SerializeField]
+    private float groundCheckDistance = 0.3f; 
+    [SerializeField]
+    private LayerMask groundLayer;
+    [SerializeField]
     private Camera playerCamera;
     [SerializeField]private Animator animator;
+
+    [SerializeField] private GameObject footstepVFXPrefab;
+    [SerializeField] private Transform leftFootTransform;
+    [SerializeField] private Transform rightFootTransform;
 
     private void Awake()
     {
@@ -43,6 +57,11 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        if (playerActionsAsset.Player.Jump.triggered && IsGrounded())
+        {
+            DoJump(new InputAction.CallbackContext());
         }
     }
     private void LookAt()
@@ -70,14 +89,14 @@ public class PlayerController : MonoBehaviour
         return right.normalized;
     }
 
-    
+
     private bool IsGrounded()
     {
-        Ray ray = new Ray(this.transform.position + Vector3.up * 0.25f, Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit hit, 0.3f))
-            return true;
-        else
-            return false;
+        // Check if the player's feet position is close to the ground
+        Vector3 feetPosition = transform.position + Vector3.up * 0.1f; // Adjust the height as needed
+        bool isGrounded = Physics.Raycast(feetPosition, Vector3.down, groundCheckDistance, groundLayer);
+        animator.SetBool("isGrounded", isGrounded); // Update animator parameter
+        return isGrounded;
     }
 
     //private void DoAttack(InputAction.CallbackContext obj)
@@ -97,6 +116,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+       
+           
+
         switch (currentState)
         {
             case PlayerState.Idle:
@@ -108,6 +130,48 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Jumping:
                 HandleJumpingState();
                 break;
+        }
+
+        bool isMoving = IsMoving();
+        bool isGrounded = IsGrounded();
+
+        if (currentState == PlayerState.Jumping && isGrounded)
+        {
+            currentState = isMoving ? PlayerState.Walking : PlayerState.Idle;
+        }
+        else if (isMoving)
+        {
+            currentState = PlayerState.Walking;
+        }
+        else if (!isMoving && isGrounded)
+        {
+            currentState = PlayerState.Idle;
+        }
+        animator.SetBool("isGrounded", IsGrounded());
+        animator.SetBool("isJumping", currentState == PlayerState.Jumping);
+        animator.SetBool("isFalling", rb.velocity.y < 0 && !IsGrounded());
+        ApplyMovement();
+        if (!IsGrounded() && rb.velocity.y < 0)
+        {
+            rb.AddForce(Physics.gravity * (customGravityScale - 1) * rb.mass);
+        }
+        UpdateAnimatorParameters();
+    }
+    public void CreateLeftFootstepVFX()
+    {
+        if (footstepVFXPrefab != null && IsGrounded())
+        {
+            Instantiate(footstepVFXPrefab, leftFootTransform.position, Quaternion.identity);
+            Debug.Log("left foot vfx");
+        }
+    }
+
+    public void CreateRightFootstepVFX()
+    {
+        if (footstepVFXPrefab != null && IsGrounded())
+        {
+            Instantiate(footstepVFXPrefab, rightFootTransform.position, Quaternion.identity);
+            Debug.Log("right foot vfx");
         }
     }
 
@@ -145,25 +209,51 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded())
         {
             currentState = IsMoving() ? PlayerState.Walking : PlayerState.Idle;
+            // Reset the jumping Animator parameter when landing
+            animator.SetBool("isJumping", false);
         }
     }
 
     private void ApplyMovement()
     {
-        forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
-        forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
+        if (IsMoving())
+        {
+            // Apply movement forces only when there is input
+            forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
+            forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
 
-        rb.AddForce(forceDirection, ForceMode.Impulse);
-        forceDirection = Vector3.zero;
+            rb.AddForce(forceDirection, ForceMode.Impulse);
+            forceDirection = Vector3.zero;
+        }
+        else
+        {
+            // Gradually reduce the velocity when there is no input
+            rb.velocity = Vector3.Lerp(rb.velocity, new Vector3(0, rb.velocity.y, 0), Time.fixedDeltaTime * stoppingFactor);
+
+        }
 
         if (rb.velocity.y < 0f)
+        {
             rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+        }
 
         Vector3 horizontalVelocity = rb.velocity;
         horizontalVelocity.y = 0;
         if (horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
+        {
             rb.velocity = horizontalVelocity.normalized * maxSpeed + Vector3.up * rb.velocity.y;
+        }
+        if (rb.velocity.y < 0 && !IsGrounded())
+        {
+            animator.SetBool("isFalling", true);
+        }
+        else
+        {
+            animator.SetBool("isFalling", false);
+        }
 
+        // Set the Animator parameter for walking
+        animator.SetFloat("speed", rb.velocity.magnitude / maxSpeed);
         LookAt();
     }
 
@@ -176,9 +266,18 @@ public class PlayerController : MonoBehaviour
     {
         if (IsGrounded())
         {
-            forceDirection += Vector3.up * jumpForce;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             currentState = PlayerState.Jumping;
+            // Set the Animator parameter for jumping
+            animator.SetBool("isJumping", true);
         }
+    }
+    private void UpdateAnimatorParameters()
+    {
+        animator.SetFloat("speed", rb.velocity.magnitude / maxSpeed);
+        animator.SetBool("isJumping", currentState == PlayerState.Jumping);
+        animator.SetBool("isFalling", rb.velocity.y < 0 && !IsGrounded());
+        // isGrounded is already set within the IsGrounded() method
     }
     private void OnEnable()
     {
