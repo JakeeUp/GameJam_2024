@@ -15,16 +15,28 @@ public class RagdollController : MonoBehaviour
     public float respawnDelay = 2f;
     public GameObject respawnPoint;
 
-    public GameObject playerBody; 
-    public List<GameObject> disappearVFXPrefabs; 
-    public List<Transform> vfxSpawnPositions; 
-    public float disappearDuration = 2f; 
+    private GameObject playerBody; 
+      public List<GameObject> disappearVFXPrefabs; 
+     public List<Transform> vfxSpawnPositions; 
+    private float disappearDuration = 2f;
+
+    [SerializeField]private AudioSource audioSource; 
+    [SerializeField]private AudioClip ragdollSound;
 
     private void Awake()
     {
         InitializeRagdollComponents();
         SetRagdollState(false);
         playerCharacter.SetActive(true);
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogError("AudioSource component not found on the game object.");
+            }
+        }
     }
 
     private void Update()
@@ -58,9 +70,15 @@ public class RagdollController : MonoBehaviour
 
     public void TurnOnRagDollWithForce(Vector3 forceDirection, float forceMagnitude)
     {
-        if (gameObject.activeSelf)  
+        if (gameObject.activeSelf)
         {
             SetRagdollState(true);
+
+            // Play the ragdoll sound effect
+            if (audioSource != null && ragdollSound != null)
+            {
+                audioSource.PlayOneShot(ragdollSound);
+            }
 
             StartCoroutine(DelayedActions(2f));
 
