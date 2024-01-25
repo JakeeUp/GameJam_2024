@@ -14,7 +14,7 @@ public class LaserDamage : MonoBehaviour
             if (ragdollController != null)
             {
                 Vector3 forceDirection = -transform.forward;
-                ragdollController.TurnOnRagDoll(forceDirection, pushForce);
+                ragdollController.TurnOnRagDollWithForce(forceDirection, pushForce);
             }
         }
     }

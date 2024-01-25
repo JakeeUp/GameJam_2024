@@ -34,6 +34,6 @@ public class EnemyCollision : MonoBehaviour
 
         // Apply the push force
         pushDirection.y = 0; // Keep the push horizontal
-        ragdollController.TurnOnRagDoll(pushDirection.normalized, pushForce);
+        ragdollController.TurnOnRagDollWithForce(pushDirection.normalized, pushForce);
     }
 }

@@ -53484,7 +53484,7 @@ AnimationClip:
   - time: 0.033333335
     functionName: CreateLeftFootstepVFX
     data: 
-    objectReferenceParameter: {fileID: 11500000, guid: bf3ea2fa0a169064996d4a7971fefb4e,
+    objectReferenceParameter: {fileID: 11500000, guid: 8c46006f2c5c5a54884c2ebd23f746d3,
       type: 3}
     floatParameter: 0
     intParameter: 0
@@ -53492,7 +53492,7 @@ AnimationClip:
   - time: 0.33333334
     functionName: CreateRightFootstepVFX
     data: 
-    objectReferenceParameter: {fileID: 11500000, guid: bf3ea2fa0a169064996d4a7971fefb4e,
+    objectReferenceParameter: {fileID: 11500000, guid: 8c46006f2c5c5a54884c2ebd23f746d3,
       type: 3}
     floatParameter: 0
     intParameter: 0

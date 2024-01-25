@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
+
+public class UIManager : MonoBehaviour
+{
+    public static UIManager instance;
+
+    [SerializeField] Image blackImage;
+    [SerializeField] float fadeSpeed = 2f;
+    public bool fadeToBlack, fadeFromBlack;
+
+  
+
+    private void Awake()
+    {
+        instance = this;
+    }
+    void Start()
+    {
+
+    }
+
+    void Update()
+    {
+
+        if (fadeToBlack)
+        {
+            blackImage.color = new Color(blackImage.color.r, blackImage.color.g, blackImage.color.b, Mathf.MoveTowards(blackImage.color.a, 1f, fadeSpeed * Time.deltaTime));
+
+            if (blackImage.color.a == 1f)
+                fadeToBlack = false;
+
+        }
+
+        if (fadeFromBlack)
+        {
+            blackImage.color = new Color(blackImage.color.r, blackImage.color.g, blackImage.color.b, Mathf.MoveTowards(blackImage.color.a, 0f, fadeSpeed * Time.deltaTime));
+
+            if (blackImage.color.a == 0f)
+                fadeFromBlack = false;
+
+        }
+    }
+
+    
+}

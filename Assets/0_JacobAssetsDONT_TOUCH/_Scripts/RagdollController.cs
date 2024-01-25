@@ -2,78 +2,106 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RagdollController : MonoBehaviour
 {
-
-
+    // Fields related to the Ragdoll
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
     private Animator animator;
 
     public float respawnDelay = 2f;
-
-    public GameObject playerBody; // Reference to the player's visible body GameObject
-    public List<GameObject> disappearVFXPrefabs; // List of disappearing VFX prefabs
-    public List<Transform> vfxSpawnPositions; // List of positions where VFXs will be spawned
     public GameObject respawnPoint;
 
-    public float disappearDuration = 2f; // Duration of the disappearing effect
+    public GameObject playerBody; 
+    public List<GameObject> disappearVFXPrefabs; 
+    public List<Transform> vfxSpawnPositions; 
+    public float disappearDuration = 2f; 
 
     private void Awake()
     {
-        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = GetComponentsInChildren<Collider>();
-        animator = GetComponent<Animator>();
-
+        InitializeRagdollComponents();
         SetRagdollState(false);
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            bool isRagdollActive = !animator.enabled;
-            SetRagdollState(!isRagdollActive);
+            ToggleRagdollState();
         }
     }
+
+    private void InitializeRagdollComponents()
+    {
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = GetComponentsInChildren<Collider>();
+        animator = GetComponent<Animator>();
+    }
+
+    private void ToggleRagdollState()
+    {
+        bool isRagdollActive = !animator.enabled;
+        SetRagdollState(!isRagdollActive);
+    }
+
     public void TurnOnRagDoll()
     {
+        // Start the fade to black
+        UIManager.instance.fadeToBlack = true;
+        StartCoroutine(FadeFromBlackAfterDelay());
         SetRagdollState(true);
     }
+    public Respawner respawner; // Reference to the Respawner script
 
-    public void TurnOnRagDoll(Vector3 forceDirection, float forceMagnitude)
+    public void TurnOnRagDollWithForce(Vector3 forceDirection, float forceMagnitude)
     {
-        SetRagdollState(true);
-
-        // Spawn disappearing VFXs at specified positions
-        for (int i = 0; i < disappearVFXPrefabs.Count; i++)
+        if (gameObject.activeSelf) // Check if the game object is active
         {
-            if (disappearVFXPrefabs[i] != null && i < vfxSpawnPositions.Count)
+            // Start the fade to black
+            UIManager.instance.fadeToBlack = true;
+            StartCoroutine(FadeFromBlackAfterDelay());
+            SetRagdollState(true);
+
+            // Delay by 2 seconds before disabling player body and spawning VFX
+            StartCoroutine(DelayedActions(1f));
+
+            if (respawner != null)
             {
-                Instantiate(disappearVFXPrefabs[i], vfxSpawnPositions[i].position, Quaternion.identity);
+                respawner.RespawnPlayer(gameObject, respawnPoint, respawnDelay);
             }
         }
-
-        // Wait for the specified duration before respawning
-        StartCoroutine(RespawnWithDelay());
     }
-    private IEnumerator RespawnWithDelay()
-    {
-        yield return new WaitForSeconds(disappearDuration);
 
-        // Trigger the respawn logic after the delay
-        Respawn();
+    private IEnumerator DelayedActions(float delayInSeconds)
+    {
+        // Wait for the specified delay
+        yield return new WaitForSeconds(delayInSeconds);
+
+        // Perform actions after the delay
+        DisablePlayerBody();
+        SpawnVFX();
     }
-    private IEnumerator DisappearPlayerAndSpawnVFX(Vector3 forceDirection, float forceMagnitude, Action onDisappearComplete)
+   
+    private IEnumerator FadeFromBlackAfterDelay()
     {
-        yield return new WaitForSeconds(disappearDuration);
+        // Wait for 2 seconds before starting to fade from black
+        yield return new WaitForSeconds(2f);
+        UIManager.instance.fadeFromBlack = true;
+    }
 
+
+    private void DisablePlayerBody()
+    {
         if (playerBody != null)
         {
             playerBody.SetActive(false);
         }
+    }
 
-        // Spawn disappearing VFXs at specified positions
+    private void SpawnVFX()
+    {
         for (int i = 0; i < disappearVFXPrefabs.Count; i++)
         {
             if (disappearVFXPrefabs[i] != null && i < vfxSpawnPositions.Count)
@@ -81,31 +109,10 @@ public class RagdollController : MonoBehaviour
                 Instantiate(disappearVFXPrefabs[i], vfxSpawnPositions[i].position, Quaternion.identity);
             }
         }
-
-        onDisappearComplete?.Invoke();
     }
 
-    private IEnumerator RespawnAfterDelay()
-    {
-        yield return new WaitForSeconds(respawnDelay);
+   
 
-        // Respawn the player
-        Respawn();
-    }
-    private Rigidbody FindMainRigidbody()
-    {
-        Rigidbody mainRb = null;
-        float maxMass = 0f;
-        foreach (var rb in ragdollRigidbodies)
-        {
-            if (rb.mass > maxMass)
-            {
-                mainRb = rb;
-                maxMass = rb.mass;
-            }
-        }
-        return mainRb;
-    }
     private void SetRagdollState(bool state)
     {
         foreach (var rb in ragdollRigidbodies)
@@ -124,57 +131,40 @@ public class RagdollController : MonoBehaviour
             }
         }
 
-
         animator.enabled = !state;
     }
 
-    public void ApplyForce(Vector3 force)
-    {
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            // Apply the force to the Rigidbody component
-            rb.AddForce(force, ForceMode.VelocityChange);
-        }
-        else
-        {
-            // Optionally, find all Rigidbodies in the ragdoll and apply the force to each one
-            Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
-            foreach (Rigidbody rigidbody in rigidbodies)
-            {
-                // Skip the main Rigidbody if it's meant to be static (e.g., if it's just a container for the character)
-                if (!rigidbody.isKinematic)
-                {
-                    rigidbody.AddForce(force, ForceMode.VelocityChange);
-                }
-            }
-        }
-    }
-
-
     public void Respawn()
     {
-        Debug.Log("Respawning player"); // Add this line for debugging
+        Debug.Log("Respawning player");
 
         if (respawnPoint != null)
         {
-            // Teleport the player to the respawn point
             transform.position = respawnPoint.transform.position;
-
-            // Enable the player's visible body
-            if (playerBody != null)
-            {
-                playerBody.SetActive(true);
-            }
-
-            // Reset any other necessary player state or variables
-
-            // Now, re-enable the player controller (if you have a separate script for it)
-            PlayerController playerController = GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                playerController.enabled = true;
-            }
+            EnablePlayerBody();
+            ResetPlayerState();
         }
     }
+
+    private void EnablePlayerBody()
+    {
+        if (playerBody != null)
+        {
+            playerBody.SetActive(true);
+        }
+    }
+
+    private void ResetPlayerState()
+    {
+        PlayerController playerController = GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.enabled = true;
+        }
+    }
+
+
+
+
+
 }

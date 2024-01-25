@@ -8,37 +8,45 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [SerializeField] private TMP_Text[] letterTexts;
-
     [SerializeField] private string currentPassword = "";
     [SerializeField] private string targetPassword = "PASSWORD";
-    [SerializeField] private int minutes = 1; 
+    [SerializeField] private int minutes = 1;
     [SerializeField] private int seconds = 0;
-    [SerializeField] private string sceneToLoad = "  "; 
-    [SerializeField] private TMP_Text timerText; 
+    [SerializeField] private string sceneToLoad = " ";
+    [SerializeField] private TMP_Text timerText;
 
     private float countdownTimer;
+    private bool isCountdownRunning = false;
 
-    private bool isCountdownRunning = false; // Flag to check if countdown is running
+    // Reference to the SceneTransitionManager
 
-    public void StartCountdown()
-    {
-        if (!isCountdownRunning)
-        {
-            StartCoroutine(Countdown());
-            isCountdownRunning = true; 
-        }
-    }
-    void Start()
-    {
-        countdownTimer = minutes * 60 + seconds;
-    }
     void Awake()
     {
         if (instance == null)
             instance = this;
         else
             Destroy(gameObject);
+
+        countdownTimer = minutes * 60 + seconds;
+
+        // Start with an ending transition (fade out)
+
     }
+
+    void Start()
+    {
+        StartCountdown();
+    }
+
+    public void StartCountdown()
+    {
+        if (!isCountdownRunning)
+        {
+            StartCoroutine(Countdown());
+            isCountdownRunning = true;
+        }
+    }
+
     private IEnumerator Countdown()
     {
         while (countdownTimer > 0)
@@ -46,16 +54,22 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             countdownTimer--;
 
-
-
             int minutesLeft = Mathf.FloorToInt(countdownTimer / 60);
             int secondsLeft = Mathf.FloorToInt(countdownTimer % 60);
             timerText.text = string.Format("{0:00}:{1:00}", minutesLeft, secondsLeft);
         }
 
-        isCountdownRunning = false; 
+        isCountdownRunning = false;
+
+        // Start the ending transition before loading a new scene
+
         SceneManager.LoadScene(sceneToLoad);
     }
+
+    
+
+
+   
 
     public void CollectLetter(char letter)
     {

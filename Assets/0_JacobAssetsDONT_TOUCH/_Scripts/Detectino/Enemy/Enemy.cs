@@ -10,9 +10,18 @@ public class Enemy : MonoBehaviour
     public float visionRange = 10f;
     [SerializeField]private GameObject player;
     private NavMeshAgent agent;
-    public Transform[] waypoints; // Patrol waypoints
+    public Transform[] waypoints; 
     private int currentWaypointIndex = 0;
     [SerializeField]private bool pursuingPlayer = false;
+
+    private Animator animator;
+    [SerializeField] private GameObject leftFootVFXPrefab; 
+    [SerializeField] private GameObject rightFootVFXPrefab; 
+    [SerializeField] private Transform leftFootTransform;
+    [SerializeField] private Transform rightFootTransform;
+    [SerializeField] private float vfxLifetime = 2f;
+
+    [SerializeField] private GameObject stompVFXPrefab;
 
     private void Start()
     {
@@ -28,10 +37,15 @@ public class Enemy : MonoBehaviour
             Debug.LogError("NavMeshAgent component not found on the enemy GameObject.");
         }
 
+        animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Animator component not found on the enemy GameObject.");
+        }
         GoToNextWaypoint();
     }
 
-    public bool HitPlayer { get; set; } // Public property to set the hit status
+    public bool HitPlayer { get; set; } 
 
     private void Update()
     {
@@ -39,8 +53,8 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("Enemy going back");
             GoToNextWaypoint();
-            HitPlayer = false; // Reset the flag
-            pursuingPlayer = false; // Stop chasing the player
+            HitPlayer = false;
+            pursuingPlayer = false; 
         }
         else if (pursuingPlayer)
         {
@@ -49,6 +63,24 @@ public class Enemy : MonoBehaviour
         else if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             GoToNextWaypoint();
+        }
+        animator.SetFloat("speed", agent.velocity.magnitude);
+    }
+    public void CreateLeftFootstepVFX()
+    {
+        if (leftFootVFXPrefab != null)
+        {
+            GameObject vfx = Instantiate(leftFootVFXPrefab, leftFootTransform.position, Quaternion.identity);
+            Destroy(vfx, vfxLifetime); 
+        }
+    }
+
+    public void CreateRightFootstepVFX()
+    {
+        if (rightFootVFXPrefab != null)
+        {
+            GameObject vfx = Instantiate(rightFootVFXPrefab, rightFootTransform.position, Quaternion.identity);
+            Destroy(vfx, vfxLifetime); 
         }
     }
 
@@ -103,6 +135,17 @@ public class Enemy : MonoBehaviour
     {
         pursuingPlayer = false;
         GoToNextWaypoint();
+    }
+    public void StompEnemy()
+    {
+        // Instantiate the stomp VFX at the enemy's position
+        if (stompVFXPrefab != null)
+        {
+            Instantiate(stompVFXPrefab, transform.position, Quaternion.identity);
+        }
+
+        // Destroy the enemy GameObject
+        Destroy(gameObject);
     }
     private void OnTriggerExit(Collider other)
     {
