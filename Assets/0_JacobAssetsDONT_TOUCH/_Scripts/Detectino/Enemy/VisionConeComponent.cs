@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class VisionConeComponent : MonoBehaviour
 {
-    public Enemy enemyScript; // Public variable to assign the enemy
+    public Enemy enemyScript;
+    public float animationDelay = 2.0f; // Duration of the animation
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && enemyScript != null)
         {
-            enemyScript.StartChasingPlayer();
+            StartCoroutine(TriggerEnemyResponse());
         }
     }
 
@@ -19,6 +20,15 @@ public class VisionConeComponent : MonoBehaviour
         if (other.CompareTag("Player") && enemyScript != null)
         {
             enemyScript.StopChasingPlayer();
+            StopAllCoroutines(); // Stop the coroutine if the player leaves the cone
         }
+    }
+
+    IEnumerator TriggerEnemyResponse()
+    {
+        enemyScript.PlaySpottedAnimation(); // Play the animation
+        yield return new WaitForSeconds(animationDelay); // Wait for the animation to finish
+        enemyScript.ResumeMovement(); // Resume enemy movement
+        enemyScript.StartChasingPlayer(); // Start chasing the player
     }
 }

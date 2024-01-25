@@ -66,6 +66,25 @@ public class Enemy : MonoBehaviour
         }
         animator.SetFloat("speed", agent.velocity.magnitude);
     }
+    public void PlaySpottedAnimation()
+    {
+        animator.SetTrigger("SpottedPlayer"); // Trigger the spotted animation
+        agent.isStopped = true; // Stop the enemy's movement
+    }
+
+    public void ResumeMovement()
+    {
+        animator.ResetTrigger("SpottedPlayer"); // Reset the animation trigger
+        agent.isStopped = false; // Resume the enemy's movement
+    }
+
+    public void StartChasingPlayer()
+    {
+        pursuingPlayer = true;
+        ResumeMovement(); // Ensure movement is resumed when starting to chase
+        agent.SetDestination(player.transform.position);
+    }
+
     public void CreateLeftFootstepVFX()
     {
         if (leftFootVFXPrefab != null)
@@ -113,24 +132,24 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-    public void StartChasingPlayer()
-    {
-        if (player == null)
-        {
-            Debug.LogError("Player object is null.");
-            return;
-        }
+    //public void StartChasingPlayer()
+    //{
+    //    if (player == null)
+    //    {
+    //        Debug.LogError("Player object is null.");
+    //        return;
+    //    }
 
-        if (agent == null)
-        {
-            Debug.LogError("NavMeshAgent is null.");
-            return;
-        }
+    //    if (agent == null)
+    //    {
+    //        Debug.LogError("NavMeshAgent is null.");
+    //        return;
+    //    }
 
-        pursuingPlayer = true;
-        agent.SetDestination(player.transform.position);
-    }
-  
+    //    pursuingPlayer = true;
+    //    agent.SetDestination(player.transform.position);
+    //}
+
     public void StopChasingPlayer()
     {
         pursuingPlayer = false;

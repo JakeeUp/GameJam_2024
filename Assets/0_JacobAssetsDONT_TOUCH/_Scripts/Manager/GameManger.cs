@@ -29,15 +29,15 @@ public class GameManager : MonoBehaviour
 
         countdownTimer = minutes * 60 + seconds;
 
-        // Start with an ending transition (fade out)
+        UIManager.instance.fadeFromBlack = true;
 
     }
 
     void Start()
     {
-        StartCountdown();
     }
 
+   
     public void StartCountdown()
     {
         if (!isCountdownRunning)

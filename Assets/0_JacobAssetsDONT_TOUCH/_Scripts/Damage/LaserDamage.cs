@@ -10,6 +10,8 @@ public class LaserDamage : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+
+
             RagdollController ragdollController = other.GetComponent<RagdollController>();
             if (ragdollController != null)
             {

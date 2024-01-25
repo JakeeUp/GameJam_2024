@@ -84,12 +84,11 @@ public class PlayerController : MonoBehaviour
         ApplyCustomGravity();
     }
 
-    [SerializeField] public bool isFalling; // The new boolean to track the falling state
+    [SerializeField] public bool isFalling;  
 
 
     private void UpdateState()
     {
-        // Check if the player is falling
         isFalling = rb.velocity.y < 0 && !IsGrounded();
 
 
@@ -140,7 +139,6 @@ public class PlayerController : MonoBehaviour
             Decelerate();
         }
 
-        // Apply custom gravity if needed
         if (!IsGrounded())
         {
             ApplyCustomGravity();
@@ -161,7 +159,6 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(forceDirection, ForceMode.Impulse);
 
-            // Update rotation
             UpdateRotation(desiredDirection);
         }
         forceDirection = Vector3.zero;
@@ -268,14 +265,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 GetCameraForward()
     {
         Vector3 forward = playerCamera.transform.forward;
-        forward.y = 0; // Remove the vertical component
+        forward.y = 0;  
         return forward.normalized;
     }
 
     private Vector3 GetCameraRight()
     {
         Vector3 right = playerCamera.transform.right;
-        right.y = 0; // Remove the vertical component
+        right.y = 0;  
         return right.normalized;
     }
 

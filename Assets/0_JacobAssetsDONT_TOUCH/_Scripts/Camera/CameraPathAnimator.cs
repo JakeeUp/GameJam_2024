@@ -12,6 +12,8 @@ public class CameraPathAnimator : MonoBehaviour
     private float nextSwitchTime;
     private bool canSkip = true; // Flag to control skipping ability
 
+    private GameManager gameManager; // Reference to the GameManager
+
     private void Start()
     {
         foreach (var cam in cameras)
@@ -26,6 +28,9 @@ public class CameraPathAnimator : MonoBehaviour
             currentCameraIndex = 0;
             nextSwitchTime = Time.time + switchInterval;
         }
+
+        // Find the GameManager in the scene
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     private void Update()
@@ -43,11 +48,14 @@ public class CameraPathAnimator : MonoBehaviour
 
         if (currentCameraIndex >= cameras.Length - 1)
         {
-            mainCamera.gameObject.SetActive(true); // Switch back to the main camera
-            canSkip = false; // Disable skipping once the main camera is active
-            if (GameManager.instance != null)
+            mainCamera.gameObject.SetActive(true);
+            canSkip = false;
+
+            // Notify the GameManager that the camera sequence is done
+            if (gameManager != null)
             {
-                GameManager.instance.StartCountdown(); // Start the countdown
+                // Start the countdown timer in the GameManager
+                gameManager.StartCountdown();
             }
         }
         else

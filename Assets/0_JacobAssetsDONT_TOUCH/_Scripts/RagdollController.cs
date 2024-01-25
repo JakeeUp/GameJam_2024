@@ -10,6 +10,7 @@ public class RagdollController : MonoBehaviour
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
     private Animator animator;
+    [SerializeField] private GameObject playerCharacter;
 
     public float respawnDelay = 2f;
     public GameObject respawnPoint;
@@ -23,6 +24,7 @@ public class RagdollController : MonoBehaviour
     {
         InitializeRagdollComponents();
         SetRagdollState(false);
+        playerCharacter.SetActive(true);
     }
 
     private void Update()
@@ -48,24 +50,19 @@ public class RagdollController : MonoBehaviour
 
     public void TurnOnRagDoll()
     {
-        // Start the fade to black
         UIManager.instance.fadeToBlack = true;
         StartCoroutine(FadeFromBlackAfterDelay());
         SetRagdollState(true);
     }
-    public Respawner respawner; // Reference to the Respawner script
+    public Respawner respawner;  
 
     public void TurnOnRagDollWithForce(Vector3 forceDirection, float forceMagnitude)
     {
-        if (gameObject.activeSelf) // Check if the game object is active
+        if (gameObject.activeSelf)  
         {
-            // Start the fade to black
-            UIManager.instance.fadeToBlack = true;
-            StartCoroutine(FadeFromBlackAfterDelay());
             SetRagdollState(true);
 
-            // Delay by 2 seconds before disabling player body and spawning VFX
-            StartCoroutine(DelayedActions(1f));
+            StartCoroutine(DelayedActions(2f));
 
             if (respawner != null)
             {
@@ -76,21 +73,62 @@ public class RagdollController : MonoBehaviour
 
     private IEnumerator DelayedActions(float delayInSeconds)
     {
-        // Wait for the specified delay
         yield return new WaitForSeconds(delayInSeconds);
 
-        // Perform actions after the delay
-        DisablePlayerBody();
+        if (playerCharacter != null)
+        {
+            playerCharacter.SetActive(false);
+        }
+
         SpawnVFX();
+
+        StartCoroutine(FadeToBlackAfterDelay(1f));
+    }
+
+    private IEnumerator FadeToBlackAfterDelay(float delayInSeconds)
+    {
+        yield return new WaitForSeconds(delayInSeconds);
+
+        UIManager.instance.fadeToBlack = true;
+
+        yield return new WaitForSeconds(2f);
+
+        SceneManager.LoadScene(1);
     }
    
-    private IEnumerator FadeFromBlackAfterDelay()
+    private void EnablePlayerCharacter()
     {
-        // Wait for 2 seconds before starting to fade from black
-        yield return new WaitForSeconds(2f);
+        if (playerCharacter != null)
+        {
+            playerCharacter.SetActive(true);
+        }
+    }
+    private IEnumerator RagdollSequence(Vector3 forceDirection, float forceMagnitude)
+    {
+        SetRagdollState(true);
+
+        yield return new WaitForSeconds(1f);
+
+        DisablePlayerBody();
+        SpawnVFX();
+
+        yield return new WaitForSeconds(1f);
+
+        UIManager.instance.fadeToBlack = true;
+
+        SceneManager.LoadScene(1);
+        yield return new WaitForSeconds(1f);
         UIManager.instance.fadeFromBlack = true;
     }
 
+    
+    
+    private IEnumerator FadeFromBlackAfterDelay()
+    {
+        yield return new WaitForSeconds(2f);
+        UIManager.instance.fadeFromBlack = true;
+    }
+    
 
     private void DisablePlayerBody()
     {
