@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class RagdollController : MonoBehaviour
 {
-    // Fields related to the Ragdoll
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
     private Animator animator;
@@ -74,7 +73,6 @@ public class RagdollController : MonoBehaviour
         {
             SetRagdollState(true);
 
-            // Play the ragdoll sound effect
             if (audioSource != null && ragdollSound != null)
             {
                 audioSource.PlayOneShot(ragdollSound);
