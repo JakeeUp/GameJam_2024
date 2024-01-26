@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7908329880276834318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1649162606605513958}
+  m_Layer: 0
+  m_Name: BottlePaint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1649162606605513958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7908329880276834318}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -32.1702, y: 0.065, z: 27.108866}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2269175686755022371}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &7614765521127107138
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1649162606605513958}
+    m_Modifications:
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.032808393
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.032808393
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6983325
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7157735
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 91.413
+      objectReference: {fileID: 0}
+    - target: {fileID: 9050967559773374171, guid: ddcfe801a66293441b59e02208d8f4ea,
+        type: 3}
+      propertyPath: m_Name
+      value: bottle_low
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ddcfe801a66293441b59e02208d8f4ea, type: 3}
+--- !u!4 &2269175686755022371 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8561536020125850721, guid: ddcfe801a66293441b59e02208d8f4ea,
+    type: 3}
+  m_PrefabInstance: {fileID: 7614765521127107138}
+  m_PrefabAsset: {fileID: 0}
