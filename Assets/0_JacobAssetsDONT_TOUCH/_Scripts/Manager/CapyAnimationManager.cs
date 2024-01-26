@@ -25,7 +25,6 @@ public class CapyAnimationManager : MonoBehaviour
 
     void Update()
     {
-        // If the player has left the room, ensure we're not in the surpriseIdle state anymore
         if (!playerInRoom && animator.GetCurrentAnimatorStateInfo(0).IsName("surpriseIdle"))
         {
             animator.SetBool("ExitSurpriseIdle", true);
@@ -39,17 +38,20 @@ public class CapyAnimationManager : MonoBehaviour
             playerInRoom = true;
             animator.SetBool("IsPlayerInRoom", true);
         }
+        else
+        {
+            animator.SetBool("ExitSurpriseIdle", false);
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
+            animator.SetBool("ExitSurpriseIdle", false);
         if (other.CompareTag("Player"))
         {
             playerInRoom = false;
             animator.SetBool("IsPlayerInRoom", false);
 
-            // Set this to false immediately if you want to exit 'surpriseIdle' right away
-            animator.SetBool("ExitSurpriseIdle", false);
         }
     }
 }

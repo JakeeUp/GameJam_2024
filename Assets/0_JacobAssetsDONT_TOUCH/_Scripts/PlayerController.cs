@@ -58,8 +58,16 @@ public class PlayerController : MonoBehaviour
     {
         HandleEscapeKey();
         HandleJumpInput();
+       // HandleMouseClick();
     }
 
+    private void HandleMouseClick()
+    {
+        if (Cursor.lockState == CursorLockMode.None && Input.GetMouseButtonDown(0))
+        {
+            LockCursor();
+        }
+    }
     private void HandleEscapeKey()
     {
         if (Input.GetKeyDown(KeyCode.Escape))

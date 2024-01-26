@@ -86,9 +86,11 @@ public class RagdollController : MonoBehaviour
             {
                 audioSource.PlayOneShot(ragdollSound);
             }
+            UIManager.instance.fadeToBlack = true;
             Debug.Log("ragdoll turned on");
             isRagDollForceOn = true;
             bPlayerDead = true;
+            AudioManager.instance.PlayPlayerDeathSound();
             StartCoroutine(DelayedActions(2f));
 
             if (respawner != null)
@@ -172,6 +174,7 @@ public class RagdollController : MonoBehaviour
             if (disappearVFXPrefabs[i] != null && i < vfxSpawnPositions.Count)
             {
                 Instantiate(disappearVFXPrefabs[i], vfxSpawnPositions[i].position, Quaternion.identity);
+                //AudioManager.instance.PlayPlayerDeathSound();
             }
         }
     }

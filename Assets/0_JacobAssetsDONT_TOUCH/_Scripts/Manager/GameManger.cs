@@ -34,13 +34,21 @@ public class GameManager : MonoBehaviour
 
         UIManager.instance.fadeFromBlack = true;
 
+
+
     }
 
     void Start()
     {
+        LockAndHideCursor();
         PlayRandomMusic();
     }
 
+    private void LockAndHideCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     private void PlayRandomMusic()
     {
         if (musicClips.Length > 0)

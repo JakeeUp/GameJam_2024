@@ -42,6 +42,9 @@ public class AIController : MonoBehaviour
     [SerializeField] private Transform rightFootTransform;
     [SerializeField] private float vfxLifetime = 2f;
 
+    [SerializeField] private float lastPlayTime = 0f;
+    [SerializeField] private float cooldown = 30f;
+
     [SerializeField] private bool bAttack;
 
 
@@ -155,10 +158,7 @@ public class AIController : MonoBehaviour
     }
     private void AttackPlayer()
     {
-        if(bAttack)
-        {
-            return;
-        }
+        
         if (playerController.bPlayerDead & playerController.isRagDollForceOn)
         {
             return;
@@ -226,10 +226,20 @@ public class AIController : MonoBehaviour
         Debug.Log("playing enemy death sound");
     }
 
+  
+
     public void PlayAttackSound()
     {
-        audioSource.PlayOneShot(attackSound);
-        Debug.Log("playing attack sound");
+        if (Time.time - lastPlayTime >= cooldown)
+        {
+            audioSource.PlayOneShot(attackSound);
+            Debug.Log("playing attack sound");
+            lastPlayTime = Time.time;
+        }
+        else
+        {
+            Debug.Log("Attack sound is on cooldown");
+        }
     }
 }
 
