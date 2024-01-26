@@ -244,11 +244,14 @@ public class PlayerController : MonoBehaviour
         playerActionsAsset.Player.Jump.started -= _ => DoJump();
         playerActionsAsset.Player.Disable();
     }
+    [SerializeField] private AudioClip[] footstepSounds; 
+    [SerializeField] private AudioSource footstepAudioSource;
     public void CreateLeftFootstepVFX()
     {
         if (footstepVFXPrefab != null && IsGrounded())
         {
             GameObject vfx = Instantiate(footstepVFXPrefab, leftFootTransform.position, Quaternion.identity);
+            AudioManager.instance.PlayFootstepSound();
             Destroy(vfx, vfxLifetime);
         }
     }
@@ -258,10 +261,19 @@ public class PlayerController : MonoBehaviour
         if (footstepVFXPrefab != null && IsGrounded())
         {
             GameObject vfx = Instantiate(footstepVFXPrefab, rightFootTransform.position, Quaternion.identity);
+            AudioManager.instance.PlayFootstepSound();
             Destroy(vfx, vfxLifetime);
         }
     }
 
+    private void PlayFootstepSound()
+    {
+        if (footstepSounds.Length > 0)
+        {
+            AudioClip clip = footstepSounds[Random.Range(0, footstepSounds.Length)];
+            footstepAudioSource.PlayOneShot(clip);
+        }
+    }
     private Vector3 GetCameraForward()
     {
         Vector3 forward = playerCamera.transform.forward;

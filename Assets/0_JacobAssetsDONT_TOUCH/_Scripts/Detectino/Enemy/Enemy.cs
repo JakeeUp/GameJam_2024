@@ -186,6 +186,8 @@ public class Enemy : MonoBehaviour
         {
             Instantiate(stompVFXPrefab, transform.position, Quaternion.identity);
         }
+        AudioManager.instance.PlayEnemyDeathSound();
+
         Debug.Log("destroy Enemy");
         //controller.PlayDeathSound();
         // Destroy the enemy GameObject

@@ -74,6 +74,10 @@ public class RagdollController : MonoBehaviour
 
     public void TurnOnRagDollWithForce(Vector3 forceDirection, float forceMagnitude)
     {
+        if(bPlayerDead)
+        {
+            return;
+        }
         if (gameObject.activeSelf)
         {
             SetRagdollState(true);

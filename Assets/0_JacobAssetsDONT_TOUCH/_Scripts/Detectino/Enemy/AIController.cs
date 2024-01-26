@@ -42,6 +42,9 @@ public class AIController : MonoBehaviour
     [SerializeField] private Transform rightFootTransform;
     [SerializeField] private float vfxLifetime = 2f;
 
+    [SerializeField] private bool bAttack;
+
+
     private RagdollController playerController;
 
     private void Start()
@@ -152,6 +155,10 @@ public class AIController : MonoBehaviour
     }
     private void AttackPlayer()
     {
+        if(bAttack)
+        {
+            return;
+        }
         if (playerController.bPlayerDead & playerController.isRagDollForceOn)
         {
             return;
@@ -160,9 +167,13 @@ public class AIController : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         if (distanceToPlayer <= attackDistance)
         {
+            bAttack = true;
             animator.SetTrigger("Attack");
-            //PlayAttackSound();
+            PlayAttackSound();
             agent.isStopped = true; 
+        }else
+        {
+            bAttack = false;
         }
     }
     private void GoToNextWaypoint()
@@ -183,7 +194,7 @@ public class AIController : MonoBehaviour
         if (leftFootVFXPrefab != null)
         {
             GameObject vfx = Instantiate(leftFootVFXPrefab, leftFootTransform.position, Quaternion.identity);
-           // PlayWalkSound();
+            PlayWalkSound();
             Destroy(vfx, vfxLifetime);
         }
     }
@@ -193,7 +204,7 @@ public class AIController : MonoBehaviour
         if (rightFootVFXPrefab != null)
         {
             GameObject vfx = Instantiate(rightFootVFXPrefab, rightFootTransform.position, Quaternion.identity);
-            //PlayWalkSound();
+            PlayWalkSound();
             Destroy(vfx, vfxLifetime);
         }
     }

@@ -41,7 +41,7 @@ public class PlayerStomp : MonoBehaviour
                 enemy.StompEnemy(); // This will play the VFX and destroy the enemy
                 if (stompSound != null)
                 {
-                    audioSource.PlayOneShot(stompSound);
+                    AudioManager.instance.PlayEnemyDeathSound();
                 }
                 // Add an upward force to the player's Rigidbody
                 Rigidbody playerRigidbody = GetComponent<Rigidbody>();

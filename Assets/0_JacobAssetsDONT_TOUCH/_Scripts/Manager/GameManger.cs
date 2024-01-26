@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     private float countdownTimer;
     private bool isCountdownRunning = false;
 
+    [SerializeField] private AudioClip[] musicClips; 
+    [SerializeField] private AudioSource musicSource;
+
     // Reference to the SceneTransitionManager
 
     void Awake()
@@ -35,9 +38,19 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        PlayRandomMusic();
     }
 
-   
+    private void PlayRandomMusic()
+    {
+        if (musicClips.Length > 0)
+        {
+            int randomIndex = Random.Range(0, musicClips.Length); 
+            AudioClip clipToPlay = musicClips[randomIndex]; 
+            musicSource.clip = clipToPlay; 
+            musicSource.Play();
+        }
+    }
     public void StartCountdown()
     {
         if (!isCountdownRunning)
@@ -61,7 +74,6 @@ public class GameManager : MonoBehaviour
 
         isCountdownRunning = false;
 
-        // Start the ending transition before loading a new scene
 
         SceneManager.LoadScene(sceneToLoad);
     }
