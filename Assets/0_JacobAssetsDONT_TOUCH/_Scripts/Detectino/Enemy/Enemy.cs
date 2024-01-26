@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    AIController controller;
     public LayerMask visionLayerMask;
     public float fieldOfViewAngle = 110f;
     public float visionRange = 10f;
@@ -22,6 +23,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float vfxLifetime = 2f;
 
     [SerializeField] private GameObject stompVFXPrefab;
+
+    private void Awake()
+    {
+        controller= GetComponent<AIController>();
+    }
 
     private void Start()
     {
@@ -42,7 +48,7 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("Animator component not found on the enemy GameObject.");
         }
-        GoToNextWaypoint();
+        //GoToNextWaypoint();
     }
 
     public bool HitPlayer { get; set; } 
@@ -52,7 +58,7 @@ public class Enemy : MonoBehaviour
         if (HitPlayer)
         {
             Debug.Log("Enemy going back");
-            GoToNextWaypoint();
+            //GoToNextWaypoint();
             HitPlayer = false;
             pursuingPlayer = false; 
         }
@@ -62,20 +68,38 @@ public class Enemy : MonoBehaviour
         }
         else if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
-            GoToNextWaypoint();
+            //GoToNextWaypoint();
         }
         animator.SetFloat("speed", agent.velocity.magnitude);
+
+        if (pursuingPlayer && !animator.GetCurrentAnimatorStateInfo(0).IsName("SpottedPlayer"))
+        {
+            ResumeMovement();
+            agent.SetDestination(player.transform.position);
+        }
     }
     public void PlaySpottedAnimation()
     {
-        animator.SetTrigger("SpottedPlayer"); // Trigger the spotted animation
-        agent.isStopped = true; // Stop the enemy's movement
+        if (animator == null)
+        {
+            Debug.LogError("Animator not found on the enemy.");
+            return;
+        }
+
+        animator.SetTrigger("SpottedPlayer");
+        agent.isStopped = true;
+    }
+
+    public void OnSpottedAnimationComplete()
+    {
+        ResumeMovement();
+        StartChasingPlayer();
     }
 
     public void ResumeMovement()
     {
-        animator.ResetTrigger("SpottedPlayer"); // Reset the animation trigger
-        agent.isStopped = false; // Resume the enemy's movement
+        animator.ResetTrigger("SpottedPlayer");
+        agent.isStopped = false; 
     }
 
     public void StartChasingPlayer()
@@ -85,32 +109,32 @@ public class Enemy : MonoBehaviour
         agent.SetDestination(player.transform.position);
     }
 
-    public void CreateLeftFootstepVFX()
-    {
-        if (leftFootVFXPrefab != null)
-        {
-            GameObject vfx = Instantiate(leftFootVFXPrefab, leftFootTransform.position, Quaternion.identity);
-            Destroy(vfx, vfxLifetime); 
-        }
-    }
+    //public void CreateLeftFootstepVFX()
+    //{
+    //    if (leftFootVFXPrefab != null)
+    //    {
+    //        GameObject vfx = Instantiate(leftFootVFXPrefab, leftFootTransform.position, Quaternion.identity);
+    //        Destroy(vfx, vfxLifetime); 
+    //    }
+    //}
 
-    public void CreateRightFootstepVFX()
-    {
-        if (rightFootVFXPrefab != null)
-        {
-            GameObject vfx = Instantiate(rightFootVFXPrefab, rightFootTransform.position, Quaternion.identity);
-            Destroy(vfx, vfxLifetime); 
-        }
-    }
+    //public void CreateRightFootstepVFX()
+    //{
+    //    if (rightFootVFXPrefab != null)
+    //    {
+    //        GameObject vfx = Instantiate(rightFootVFXPrefab, rightFootTransform.position, Quaternion.identity);
+    //        Destroy(vfx, vfxLifetime); 
+    //    }
+    //}
 
-    private void GoToNextWaypoint()
-    {
-        if (waypoints.Length == 0)
-            return;
+    //private void GoToNextWaypoint()
+    //{
+    //    if (waypoints.Length == 0)
+    //        return;
 
-        agent.destination = waypoints[currentWaypointIndex].position;
-        currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-    }
+    //    agent.destination = waypoints[currentWaypointIndex].position;
+    //    currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+    //}
 
     private void OnTriggerStay(Collider other)
     {
@@ -153,7 +177,7 @@ public class Enemy : MonoBehaviour
     public void StopChasingPlayer()
     {
         pursuingPlayer = false;
-        GoToNextWaypoint();
+       // GoToNextWaypoint();
     }
     public void StompEnemy()
     {
@@ -162,16 +186,20 @@ public class Enemy : MonoBehaviour
         {
             Instantiate(stompVFXPrefab, transform.position, Quaternion.identity);
         }
-
+        Debug.Log("destroy Enemy");
+        controller.PlayDeathSound();
         // Destroy the enemy GameObject
         Destroy(gameObject);
     }
+
+   
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject == player)
         {
             pursuingPlayer = false;
-            GoToNextWaypoint();
+           // GoToNextWaypoint();
         }
     }
 }

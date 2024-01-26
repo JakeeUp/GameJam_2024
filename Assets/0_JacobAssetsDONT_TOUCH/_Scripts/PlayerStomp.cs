@@ -9,12 +9,15 @@ public class PlayerStomp : MonoBehaviour
     PlayerController controller;
     [SerializeField] private float playerStompForce = 5f;
     [SerializeField]private bool isFalling = false;
+    [SerializeField] private AudioClip stompSound;
+    private AudioSource audioSource;
 
 
     private void Awake()
     {
         
         controller = GetComponent<PlayerController>();
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void Update()
@@ -36,7 +39,10 @@ public class PlayerStomp : MonoBehaviour
             if (enemy != null)
             {
                 enemy.StompEnemy(); // This will play the VFX and destroy the enemy
-
+                if (stompSound != null)
+                {
+                    audioSource.PlayOneShot(stompSound);
+                }
                 // Add an upward force to the player's Rigidbody
                 Rigidbody playerRigidbody = GetComponent<Rigidbody>();
                 if (playerRigidbody != null)

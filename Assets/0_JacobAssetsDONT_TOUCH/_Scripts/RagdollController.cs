@@ -77,7 +77,7 @@ public class RagdollController : MonoBehaviour
             {
                 audioSource.PlayOneShot(ragdollSound);
             }
-
+            Debug.Log("ragdoll turned on");
             StartCoroutine(DelayedActions(2f));
 
             if (respawner != null)

@@ -9,7 +9,7 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 7df3c548558e56e4d9faf47374a00cce,
+    m_Motion: {fileID: -5948452554554916643, guid: 142c91ff83e077741bd8653d502e4f03,
       type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
@@ -62,7 +62,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 7bcc8e1856365f94db2ffae18c69332d,
+  m_Motion: {fileID: -8182556104344710672, guid: a2dd19d3195ed58468b26b36dc23f0c6,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -94,6 +94,33 @@ AnimatorStateTransition:
   m_InterruptionSource: 2
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &-5770763788181751019
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PossumFallCycle
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -8182556104344710672, guid: a2dd19d3195ed58468b26b36dc23f0c6,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1107 &-5034743436589768077
 AnimatorStateMachine:
   serializedVersion: 6
@@ -115,6 +142,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -7976863637139559375}
     m_Position: {x: 310, y: 210, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -5770763788181751019}
+    m_Position: {x: 330, y: 340, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -146,7 +176,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 7d541196431215f46bf137dba9555089,
+  m_Motion: {fileID: 4040925929178721346, guid: 8a3da9ae53ff436448ebf0557af2f501,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -294,7 +324,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 6151569351839d24f9d8f8e7f8c2fced,
+  m_Motion: {fileID: -6708434419797387988, guid: 0093cd681b0d23447a0dfd82426067fd,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
