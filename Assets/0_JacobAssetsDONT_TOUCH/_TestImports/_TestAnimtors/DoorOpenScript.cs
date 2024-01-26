@@ -11,13 +11,17 @@ public class DoorOpenScript : MonoBehaviour
     [SerializeField] private bool IsAtDoor = false;
 
     [SerializeField] private TextMeshProUGUI CodeText;
+    [SerializeField] private TextMeshProUGUI OpenText;
     private string CodeTextValue = "";
     public string safeCode;
     public GameObject CodePanel;
+    public GameObject OpenTextPanel;
 
     void Start()
     {
         anim = GetComponent<Animator>();
+        OpenTextPanel.SetActive(false);
+
     }
 
     void Update()
@@ -30,7 +34,6 @@ public class DoorOpenScript : MonoBehaviour
             UnlockAndShowCursor(); // Call function to unlock and show cursor
         }
 
-        // If the code panel is active and the user presses Escape, hide the panel and lock the cursor
         if (CodePanel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {
             CodePanel.SetActive(false);
@@ -61,6 +64,8 @@ public class DoorOpenScript : MonoBehaviour
     {
         if (other.CompareTag("Player")) // It's better to use CompareTag instead of checking the tag property directly
         {
+            OpenTextPanel.SetActive(true);
+
             IsAtDoor = true;
         }
     }
@@ -69,6 +74,7 @@ public class DoorOpenScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            OpenTextPanel.SetActive(false);
             IsAtDoor = false;
             CodePanel.SetActive(false);
             LockAndHideCursor(); // Lock and hide the cursor when the player exits the trigger area

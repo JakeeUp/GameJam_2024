@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/0_JacobAssetsDONT_TOUCH/_Scenes/EndGame.unity
     guid: b5fd19144d41bf543953813448bf655b
+  - enabled: 0
+    path: Assets/0_JacobAssetsDONT_TOUCH/_Scenes/rules.unity
+    guid: 85176eabe621cd9469dc2d0b78e0a64b
   m_configObjects: {}

@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private string sceneToLoad = "";
+    [SerializeField] private string sceneToLoadrules = "";
+    [SerializeField] private string GOBACK = "";
     UIManager manager;
 
     private void Awake()
@@ -24,7 +26,16 @@ public class MainMenu : MonoBehaviour
         UIManager.instance.fadeToBlack = true;
         StartCoroutine(StartGameSequence());
     }
+    public void StartRules()
+    {
+        UIManager.instance.fadeToBlack = true;
+        StartCoroutine(RulesGame());
 
+    }
+    public void GoBack()
+    {
+
+    }
     private IEnumerator StartGameSequence()
     {
         // Start fading to black
@@ -38,7 +49,32 @@ public class MainMenu : MonoBehaviour
         // Now load the scene
         SceneManager.LoadScene(sceneToLoad);
     }
+    private IEnumerator RulesGame()
+    {
+        // Start fading to black
 
+
+
+
+        // Then wait for an additional 2 seconds
+        yield return new WaitForSeconds(.5f);
+
+        // Now load the scene
+        SceneManager.LoadScene(sceneToLoadrules);
+    }
+    private IEnumerator GOBack()
+    {
+        // Start fading to black
+
+
+
+
+        // Then wait for an additional 2 seconds
+        yield return new WaitForSeconds(.5f);
+
+        // Now load the scene
+        SceneManager.LoadScene(GOBACK);
+    }
     public void QuitGame()
     {
         Debug.Log("Quit game requested");
