@@ -42,6 +42,8 @@ public class AIController : MonoBehaviour
     [SerializeField] private Transform rightFootTransform;
     [SerializeField] private float vfxLifetime = 2f;
 
+    private RagdollController playerController;
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -52,6 +54,12 @@ public class AIController : MonoBehaviour
         waypointWaitTimer = waypoints[waypointIndex].waitTime;
 
         enemyCollisionScript = GetComponent<EnemyCollision>();
+
+        player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerController = player.GetComponent<RagdollController>();
+        }
     }
 
     private void Update()
@@ -144,6 +152,11 @@ public class AIController : MonoBehaviour
     }
     private void AttackPlayer()
     {
+        if (playerController.bPlayerDead & playerController.isRagDollForceOn)
+        {
+            return;
+        }
+        
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         if (distanceToPlayer <= attackDistance)
         {

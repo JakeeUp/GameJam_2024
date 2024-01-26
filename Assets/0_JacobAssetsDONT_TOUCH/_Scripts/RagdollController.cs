@@ -22,8 +22,13 @@ public class RagdollController : MonoBehaviour
     [SerializeField]private AudioSource audioSource; 
     [SerializeField]private AudioClip ragdollSound;
 
+    public bool bPlayerDead;
+    public bool isRagDollForceOn;
+
     private void Awake()
     {
+        bPlayerDead = false;
+        isRagDollForceOn = false;
         InitializeRagdollComponents();
         SetRagdollState(false);
         playerCharacter.SetActive(true);
@@ -78,6 +83,8 @@ public class RagdollController : MonoBehaviour
                 audioSource.PlayOneShot(ragdollSound);
             }
             Debug.Log("ragdoll turned on");
+            isRagDollForceOn = true;
+            bPlayerDead = true;
             StartCoroutine(DelayedActions(2f));
 
             if (respawner != null)

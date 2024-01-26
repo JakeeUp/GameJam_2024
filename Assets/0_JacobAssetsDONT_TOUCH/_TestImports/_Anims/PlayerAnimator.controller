@@ -163,7 +163,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Falling_Landin
-  m_Speed: 1
+  m_Speed: 10
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -6527234959323352689}
@@ -324,7 +324,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -6708434419797387988, guid: 0093cd681b0d23447a0dfd82426067fd,
+  m_Motion: {fileID: -4822615238774870503, guid: 726a254e9ef6d784da23064e4165d9e0,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
